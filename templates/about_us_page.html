@@ -1,0 +1,20 @@
+{% extends 'shared/MainLayout.html' %}
+{% block content %}
+    <!--body-->
+    <div class="container">
+        <!--title-->
+        <div class="row content-title">
+            <h1><small>درباره ما</small></h1>
+        </div>
+        <!--end title-->
+        <!--text-->
+        <div class="col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2">
+            <p id="about-us-text">
+                {{ site_settings.about_us_text }}
+            </p>
+        </div>
+        <!--end text-->
+    </div>
+    <!--end body-->
+
+{% endblock %}

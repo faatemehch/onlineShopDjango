@@ -1,0 +1,10 @@
+Metadata-Version: 1.0
+Name: django-locality
+Version: 0.2.3
+Summary: Countries and territories, made usable.
+Home-page: https://github.com/rfkrocktk/django-locality
+Author: Naftuli Tzvi Kay
+Author-email: rfkrocktk@gmail.com
+License: AGPL
+Description: UNKNOWN
+Platform: UNKNOWN

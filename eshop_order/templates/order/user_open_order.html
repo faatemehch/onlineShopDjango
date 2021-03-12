@@ -1,0 +1,151 @@
+{% extends 'shared/MainLayout.html' %}
+{% load mathfilters %}
+{% block content %}
+    <!--body-->
+    <div class="container" id="new_data">
+        <div class="container">
+            <!--title-->
+            {% if details is None %}
+                <div class="row content-title">
+                    <h1><small>سبد خرید شما خالی است</small></h1>
+                </div>
+            {% else %}
+                <div class="row content-title">
+                    <h1><small>مشاهده سبد خرید</small></h1>
+                </div>
+                <!--end title-->
+                {% for detail in details %}
+                    <!--order details items-->
+                    <div class="row order-list">
+                        <div class="media">
+                            <div class="media-left media-middle col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                <a href="#">
+                                    <img class="media-object img-circle"
+                                         src="{{ detail.product.image.url }}"
+                                         alt="..."
+                                         width="200px order-list-img" height="200px">
+                                </a>
+                            </div>
+                            <div class="media-left col-lg-8 col-md-8 col-sm-11 col-xs-11 order-list-detail">
+                                <h3 class="media-heading order-list-text order-list-title">{{ detail.product.title }}</h3>
+                                <h4 class="order-list-text order-list-price">
+                                    <label>
+                                        قیمت محصول:
+                                    </label>
+                                    {% if detail.product.discounted_price %}
+                                        <del>
+                                            {{ detail.product.price }}تومان
+                                        </del>
+                                        {{ detail.product.discounted_price }} تومان
+                                    {% else %}
+                                        {{ detail.product.price }} تومان
+                                    {% endif %}
+                                </h4>
+                                <h4 class="order-list-text">
+                                    <label>
+                                        تعداد:
+                                    </label>
+                                    <a href="{% url 'add_single_item' detail.id %}">
+                                        <button type="button" {% if detail.product.quantity == 0 %}
+                                                disabled{% endif %}>
+                                            <i class="fa fa-plus" style="font-size:15px"></i>
+                                        </button>
+                                    </a>
+                                    <span style="background-color: white">{{ detail.count }}</span>
+                                    <a href="{% url 'ajax_remove_single_item' detail.id %}" class="delete"
+                                       id="remove_single_item">
+                                    <button type="button" {% if detail.count == 0 %}disabled{% endif %}>
+                                        <i class="fa fa-minus" style="font-size:15px"></i>
+                                    </button>
+                                    </a>
+                                </h4>
+                            </div>
+                            <div class="media-left col-lg-1 col-md-1 col-sm-1 col-xs-1 pull-left">
+                                <a href="{% url 'ajax_remove_order_details'  detail.id %}" class="delete"
+                                   id="{{ detail.id }}"
+                                   data-remove-url="{% url 'ajax_remove_order_details'  detail.id %}">
+                                    <button type="button" class="order-list-trash-btn pull-left close"
+                                            aria-label="Close">
+                                        <i class="fa fa-trash text-danger" style="font-size:24px"></i>
+                                    </button>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <!--end order items-->
+                {% endfor %}
+                </div>
+                <div class="container">
+                    <div class="col-lg-6">
+                        <h4 class="order-list-text">
+                            <label>
+                                جمع کل:
+                            </label>
+                            {{ total }} تومان
+                        </h4>
+                        {% if order.use_code %}
+                            <h4 class="order-list-text">
+                                <label>
+                                    میزان سود شما:
+                                </label>
+                                {{ order.coupon_code.amount }}درصد
+                            </h4>
+                        {% endif %}
+                    </div>
+                    <!--off code-->
+                    <form method="post" action="">
+                        {% csrf_token %}
+                        <div class="pull-left col-lg-6">
+                            <div class="col-lg-12">
+                                <div class="input-group">
+                                    {{ coupon_form.code }}
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-danger" type="submit">
+                                            اعمال کد تخفیف
+                                        </button>
+                                    </span>
+                                </div><!-- /input-group -->
+                            </div><!-- /.col-lg-6 -->
+                        </div>
+                    </form>
+                    <!--end off code-->
+                </div>
+                <div class="container">
+                    <a href="{% url 'complete_order' %}">
+                        <button class="btn btn-block btn-success" id="order-list-complete-btn">
+                            تکمیل خرید
+                        </button>
+                    </a>
+
+                </div>
+            {% endif %}
+    </div>
+    </div>
+    <!--end body-->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script>
+        // Delete Django Ajax Call
+        $(".delete").click(function (e) {
+            {#var endpoint = $('.delete').attr("data-remove-url");#}
+            var href = this.href
+            var id = this.id
+            {#alert(e)#}
+            e.preventDefault();  // don't follow the link
+            $.ajax({
+                {#type: 'DELETE',#}
+                {#method: 'GET',#}
+                url: href,
+                success: function (data) {
+                    $("#new_data").html(data);
+                    $(alert('محصول با موفقیت از سبد خرید شما حذف گردید!'));
+                },
+                error: function (error_data) {
+                    console.log(error_data)
+                }
+            });
+            $("#" + id).fadeOut(1000);
+        })
+        ;
+
+    </script>
+{% endblock %}

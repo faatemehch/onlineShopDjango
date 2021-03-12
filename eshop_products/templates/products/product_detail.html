@@ -1,0 +1,265 @@
+{% extends 'shared/MainLayout.html' %}
+{% block content %}
+    <!--body-->
+    <div class="container">
+        <!--title-->
+        <div class="row content-title">
+            <h1><small>مشاهده محصول</small></h1>
+        </div>
+        <!--end title-->
+
+        <!--product detail-->
+        <div class="row">
+            <!--image-->
+            <div class="col-lg-4 col-md-4 col-sm-12 ">
+                <img src="{{ product.image.url }}" alt="{{ product.title }}"
+                     class="img-circle"
+                     id="single-product-img">
+            </div>
+            <!--end image-->
+
+            <div class="col-lg-8 col-md-8 col-sm-12">
+                <h3 id="single-product-title">
+                    {{ product.title }}
+                    {% if not product.active %}
+                        <span class="label label-warning">ناموجود</span>
+                    {% endif %}
+                </h3>
+
+                <h3 id="single-product-price">
+                    <label>
+                        قیمت محصول:
+                    </label>
+                    {% if product.discounted_price %}
+                        <del>{{ product.price }} تومان</del>
+                        {{ product.discounted_price }} تومان
+                    {% else %}
+                        {{ product.price }} تومان
+                    {% endif %}
+                </h3>
+
+                <h6>
+                    <strong>
+                        شناسه محصول:
+                    </strong>
+                    {{ product.id }}
+                </h6>
+
+                <h5>
+                    <strong>
+                        موجود در در انبار:
+                    </strong>
+                    {{ product.quantity }} عدد
+                </h5>
+                <form method="post" action="{% url 'add_user_order' %}">
+                    {% csrf_token %}
+                    {{ new_order_form.product_id }}
+                    <div class="row" id="single-product-form">
+                        <!--choose size-->
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                            <label for="size"> انتخاب سایز:</label>
+                            <select name="size">
+                                <option value="small">S</option>
+                                <option value="medium">M</option>
+                                <option value="large">L</option>
+                                <option value="x-large">XL</option>
+                            </select>
+                            <br><br>
+                        </div>
+                        <!--end choose size-->
+                        <!--choose color-->
+                        <div class="col-lg-4 col-md-4  col-sm-4 col-xs-12">
+                            <label for="color"> انتخاب رنگ:</label>
+                            <select name="color" id="cars">
+                                <option value="blue">آبی</option>
+                                <option value="red">قرمز</option>
+                                <option value="green">سبز</option>
+                                <option value="pink">صورتی</option>
+                            </select>
+                            <br><br>
+
+                        </div>
+                        <!--end choose color-->
+                        <!--choose number of product-->
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                            <label>
+                                تعداد سفارش محصول :
+                            </label>
+                            {{ new_order_form.count }}
+                            {#                            <input aria-label="Small" type="number" id="quantity" name="quantity"#}
+                            {#                                   min="1" max="{{ product.quantity }}" value="{{ new_order_form.count }}">#}
+                        </div>
+                        <!--end choose number of product-->
+                    </div>
+                    <button class="btn btn-info btn-block {% if product.quantity == 0 %}disabled {% elif product.active != True %}disabled{% endif %}"
+                            type="submit">افزودن
+                        به سبد خرید
+                    </button>
+                </form>
+            </div>
+        </div>
+        <!--end product detail-->
+
+        <!--product descriptions & comments & details -->
+        <div class="container">
+            <div class="row">
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active">
+                        <a href="#home" aria-controls="home" role="tab" data-toggle="tab">توضیحات محصول</a>
+                    </li>
+                    <li role="presentation">
+                        <a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">راهنمای سایز</a>
+                    </li>
+                    <li role="presentation">
+                        <a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">نظرات کاربران</a>
+                    </li>
+                </ul>
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <!--descriptions-->
+                    <div role="tabpanel" class="tab-pane active" id="home">
+                        <div id="single-product-description">
+                            <p id="single-product-description-text">
+                                {{ product.description }}
+                            </p>
+                        </div>
+                    </div>
+                    <!--end descriptions-->
+                    <!--more detail-->
+                    <div role="tabpanel" class="tab-pane" id="messages">
+
+                        <table class="table table-hover">
+                            <tr class="success">
+                                <td>سایز</td>
+                                <td>S</td>
+                                <td>M</td>
+                                <td>L</td>
+                                <td>XL</td>
+                            </tr>
+                            <tr class="danger">
+                                <td>قد</td>
+                                <td>۴۰</td>
+                                <td>۴۲</td>
+                                <td>۴۵</td>
+                                <td>۵۰</td>
+                            </tr>
+                            <tr class="warning">
+                                <td>عرض</td>
+                                <td>۳۰</td>
+                                <td>۳۲</td>
+                                <td>۳۷</td>
+                                <td>۴۵</td>
+                            </tr>
+
+                        </table>
+                    </div>
+                    <!--end more detail-->
+                    <!--comment-->
+                    <div role="tabpanel" class="tab-pane" id="profile">
+                        <div class="row" id="comments">
+                            <!--user comments-->
+                            <div class="col-lg-5 col-md-5" id="user-comments">
+                                {% for comment in page_obj %}
+                                    <div class="list-group">
+                                <span href="#" class="list-group-item">
+                                    <h4 class="list-group-item-heading">{{ comment.full_name }}</h4>
+                                    <p class="list-group-item-text">{{ comment.comment }}</p>
+                                </span>
+                                    </div>
+                                {% endfor %}
+                                <!-- comment paging-->
+                                <div class="row page-header paging-product">
+                                    <nav aria-label="Page navigation">
+                                        <ul class="pager">
+                                            <li class="{% if page_obj.has_next %}next{% else %}next disabled{% endif %}">
+                                                <a href="?page={{ paginator.num_pages }}&q={{ q|urlencode }}">
+                                                    آخر
+                                                    <span aria-hidden="true">&larr;</span>
+                                                </a>
+                                            </li>
+                                            {% for page in paginator.page_range %}
+                                                {% if page == paginator.num_pages %}
+                                                    <li class="active"><a
+                                                            href="?page={{ page }}">{{ page }}</a>
+                                                    </li>
+                                                {% elif page > page_obj.number|add:'-3' and page < page_obj.number|add:'3' %}
+                                                    <li><a href="?page={{ page }}&q={{ q|urlencode }}">{{ page }}</a>
+                                                    </li>
+                                                {% endif %}
+                                            {% endfor %}
+                                            <li class="{% if not page_obj.has_previous %}previous disabled{% else %}previous{% endif %}">
+                                                <a href="?page=1&q={{ q|urlencode }}">
+                                                    <span aria-hidden="true">&rarr;</span>
+                                                    اول
+                                                </a>
+                                            </li>
+
+                                        </ul>
+                                    </nav>
+
+                                </div>
+                                <!--end comment paging-->
+                            </div>
+                            <!--end user comments-->
+                            <!--send comment-->
+                            <div class="col-lg-7 col-md-7">
+                                <form method="post">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <label for="{{ comment_form.full_name.id_for_label }}">{{ comment_form.full_name.label }}: </label>
+                                        {{ comment_form.full_name }}
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="{{ comment_form.email.id_for_label }}">{{ comment_form.email.label }}: </label>
+                                        {{ comment_form.email }}
+                                    </div>
+                                    <label for="{{ comment_form.comment.id_for_label }}">{{ comment_form.comment.label }}: </label>
+                                    {{ comment_form.comment }}
+                                    <button type="submit" class="btn btn-danger btn-block">ارسال نظر</button>
+                                </form>
+                            </div>
+                            <!-- ends end comment-->
+                        </div>
+
+                    </div>
+                    <!--end comment-->
+                </div>
+
+            </div>
+        </div>
+        <!--end product descriptions & comments & details-->
+        <!--related products-->
+        <div class="row content-title">
+            <h1><small>مشاهده محصولات مرتبط</small></h1>
+        </div>
+        <div class="row">
+            <!--related product -->
+            {% for related_product in grouped_related_products %}
+
+                <div class="col-sm-6 col-md-3 col-lg-3 related-product">
+                    <div class="thumbnail">
+                        <img src="{{ related_product.image.url }}" alt="...">
+                        <div class="caption">
+                            <h3>{{ related_product.title }}</h3>
+                            <p>
+                                <label>قیمت: </label>
+                                {{ related_product.price }} تومان
+                            </p>
+                            <p>
+                                <a href="{{ related_product.get_absolute_url }}" class="btn btn-primary btn-block"
+                                   role="button">مشاهده جزئیات محصول</a>
+                                <a href="{% url 'add_single_new_item' related_product.id %}"
+                                   class="btn btn-warning btn-block" role="button">افزودن به سبد خرید</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+            <!--end related product -->
+
+        </div>
+        <!--end related products-->
+    </div>
+    <!--end body-->
+{% endblock %}

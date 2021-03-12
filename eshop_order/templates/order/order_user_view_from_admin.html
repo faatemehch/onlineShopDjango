@@ -1,0 +1,67 @@
+{% extends 'shared/MainLayout.html' %}
+{% block  content %}
+    <!--title-->
+    <div class="container content-title">
+        <h1><small>سفارشات مشتریان</small></h1>
+    </div>
+    <!--end title-->
+    <!--body-->
+    <div class="container" id="not_send_data">
+        <a href="#" id="get-sent-or-not"
+           data-get-sent-url="{% url 'ajax_get_sent_orders' value %}">"{{ inner_title }}"</a>
+        <div class="row">
+            <table class="table table-bordered" id="MyTable">
+                <tr class="warning">
+                    <td>ردیف</td>
+                    <td>شناسه سفارشات</td>
+                    <td>نام و نام خانوادگی</td>
+                    <td>تاریخ ثبت سفارش</td>
+                    <td>وضعیت پرداخت</td>
+                    <td>وضعیت ارسال</td>
+                    <td>مبلغ کل</td>
+                    <td>مشاهده جزيیات سفارش</td>
+                    {% for order in users_order %}
+                        <tr>
+                            <td class="row-count"></td>
+                            <td>{{ order.tracking_code }}</td>
+                            <td>{{ order.name }} {{ order.family }}</td>
+                            <td>{{ order.payment_date|date:'H:i:s - Y/m/d' }}</td>
+                            <td>پرداخت شده</td>
+                            <td>
+                                {% if order.is_send == True %}
+                                    ارسال شده
+                                {% else %}
+                                    در دست بررسی
+                                {% endif %}
+                            </td>
+                            <td>{{ order.get_total_price }}</td>
+                            <td>
+                                <a href="{% url 'show_user_order_detail' order.id %}"
+                                   class="btn btn-primary btn-block">
+                                    مشاهده جزئیات سفارش
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+            </table>
+        </div>
+    </div>
+    <!--end body-->
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script>
+        $("#get-sent-or-not").click(function () {
+            var endpoint = $("#get-sent-or-not").attr("data-get-sent-url");
+            $.ajax({
+                method: 'GET',
+                url: endpoint,
+                success: function (data) {
+                    $("#not_send_data").html(data);
+                },
+                error: function (error_data) {
+                    console.log(error_data)
+                }
+            })
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends 'shared/MainLayout.html' %}
+{% load render_partial %}
+{% block content %}
+    <!--body-->
+    <div class="container">
+        <!--title-->
+        <div class="row content-title">
+            <h1><small>{{ inner_title }}</small></h1>
+        </div>
+        <!--end title-->
+        <!--content-->
+        <div class="row">
+            <!--start sidebar-->
+            <div class="col-lg-3 col-md-2 col-sm-12 col-xs-12 sidebar-products">
+                {% render_partial 'eshop_products.views.product_categories_partial' %}
+            </div>
+            <!--end sidebar-->
+            <div class="col-lg-9 col-md-10 col-sm-12 col-xs-12">
+                <!--start products-->
+                <div class="row">
+                    {% for product in object_list %}
+                        {% include 'products/product_item_component.html' with  product=product %}
+                    {% endfor %}
+                </div>
+                <!--end products-->
+                <!--start paging-->
+                <div class="row page-header paging-product">
+                    <nav aria-label="Page navigation">
+                        <ul class="pager">
+                            <li class="{% if page_obj.has_next %}next{% else %}next disabled{% endif %}">
+                                <a href="?page={{ page_obj.paginator.num_pages }}&q={{ q|urlencode }}">
+                                    آخر
+                                    <span aria-hidden="true">&larr;</span>
+                                </a>
+                            </li>
+                            {% for page in page_obj.paginator.page_range %}
+                                {% if page == page_obj.number %}
+                                    <li class="active"><a href="?page={{ page }}&q={{ q|urlencode }}">{{ page }}</a>
+                                    </li>
+                                {% elif page > page_obj.number|add:'-2' and page < page_obj.number|add:'2' %}
+                                    <li><a href="?page={{ page }}&q={{ q|urlencode }}">{{ page }}</a></li>
+                                {% endif %}
+                            {% endfor %}
+
+                            <li class="{% if not page_obj.has_previous %}previous disabled{% else %}previous{% endif %}">
+                                <a href="?page=1&q={{ q|urlencode }}">
+                                    <span aria-hidden="true">&rarr;</span>
+                                    اول
+                                </a>
+                            </li>
+
+                        </ul>
+                    </nav>
+
+                </div>
+                <!--end paging-->
+            </div>
+        </div>
+        <!--end content-->
+    </div>
+    <!--end body-->
+{% endblock %}

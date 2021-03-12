@@ -1,0 +1,85 @@
+{% extends 'shared/MainLayout.html' %}
+{% block content %}
+    <!--title-->
+    <div class="container">
+        <div class="row content-title">
+            <h1><small>تکمیل فرآیند خرید</small></h1>
+        </div>
+    </div>
+    <!--end title-->
+    <!--complete form-->
+    <div class="container">
+        <form method="post" data-cities-url="{% url 'ajax_load_cities' %}" id="completeForm" novalidate>
+            {% csrf_token %}
+
+            <div class="row">
+                <div class="col-lg-6 col-md-6 form-group">
+                    <label for="{{ complete_form.name.id_for_label }}">{{ complete_form.name.label }}</label>
+                    {{ complete_form.name }}
+                </div>
+
+                <div class="col-lg-6 col-md-6 form-group">
+
+                    <label for="{{ complete_form.family.id_for_label }}">{{ complete_form.family.label }}</label>
+                    {{ complete_form.family }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6 col-md-6 form-group">
+                    <label for="{{ complete_form.phone_number.id_for_label }}">{{ complete_form.phone_number.label }}</label>
+                    {{ complete_form.phone_number }}
+                </div>
+                <div class="col-lg-6 col-md-6 form-group">
+                    <label for="{{ complete_form.post_code.label }}">{{ complete_form.post_code.label }}</label>
+                    {{ complete_form.post_code }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-lg-6 col-md-6">
+
+                    <label for="{{ complete_form.province.id_for_label }}">{{ complete_form.province.label }}</label>
+                    {{ complete_form.province }}
+                </div>
+                <div class="form-group col-lg-6 col-md-6">
+
+                    <label for="{{ complete_form.city.id_for_label }}">{{ complete_form.city.label }}</label>
+                    {{ complete_form.city }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6 col-md-6 form-group">
+
+                    <label for="{{ complete_form.address.id_for_label }}">{{ complete_form.address.label }}</label>
+                    {{ complete_form.address }}
+                </div>
+                <div class="col-lg-6 col-md-6 form-group">
+
+                    <label {{ complete_form.description.id_for_label }}>{{ complete_form.description.label }}</label>
+                    {{ complete_form.description }}
+                </div>
+            </div>
+            <a href="
+        {% url 'home' %}">
+                <button type="submit" class="btn btn-success btn-block">پرداخت</button>
+            </a>
+        </form>
+    </div>
+    <!--end complete form-->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script>
+        $("#id_province").change(function () {
+            var url = $("#completeForm").attr("data-cities-url");
+            var provinceId = $(this).val();
+            $.ajax({
+                url: url,
+                data: {
+                    'province': provinceId
+                },
+                success: function (data) {
+                    $("#id_city").html(data);
+                }
+            });
+        });
+    </script>
+{% endblock %}
+

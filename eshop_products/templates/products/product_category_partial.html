@@ -1,0 +1,25 @@
+<div class="list-group">
+    <i href="#" class="list-group-item active">مرتب سازی</i>
+    <a href="{% url 'products-new' %}" class="list-group-item">جدید‌‌ترین</a>
+    <a href="#" class="list-group-item">پر‌ فروش‌ترین</a>
+    <a href="{% url 'products-most-expensive' %}" class="list-group-item">گران‌ترین</a>
+    <a href="{% url 'products-cheapest' %}" class="list-group-item">ارزان‌ترین</a>
+</div>
+<div class="list-group">
+    <a href="#" class="list-group-item active">دسته بندی</a>
+    {% for category in categories %}
+        <a href="{% url 'products-category' category.name %}" class="list-group-item">{{ category.title }}</a>
+        {% for sub_category in sub_categories %}
+            {% if sub_category.category.title == category.title %}
+                <a href="{% url 'products-category' sub_category.name %}"
+                   class="list-group-item" style="color: red">{{ sub_category.title }}</a>
+            {% endif %}
+        {% endfor %}
+    {% endfor %}
+</div>
+
+<div class="list-group">
+    <a href="#" class="list-group-item active">نمایش براساس</a>
+    <a href="{% url 'products-active' %}" class="list-group-item">کالاهای موجود</a>
+    <a href="{% url 'list_products' %}" class="list-group-item">تمامی محصولات</a>
+</div>

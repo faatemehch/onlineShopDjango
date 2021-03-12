@@ -1,0 +1,89 @@
+{% extends 'shared/MainLayout.html' %}
+{% block content %}
+    <!--CONTACT FORM-->
+    <div class="container">
+        <div class="row content-title">
+            <h1><small>تماس با ما</small></h1>
+        </div>
+        <!--content-->
+        <div class="row">
+
+            <!--contact-us form-->
+            <div class="col-md-6 col-lg-6">
+                <!--            <div class="col-lg-12">-->
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        {% for error in contact_form.user_name.errors %}
+                            <p class="text-danger">{{ error }}</p>
+                        {% endfor %}
+                        <label for="{{ contact_form.user_name.id_for_label }}">
+                            {{ contact_form.user_name.label }}
+                        </label>
+                        {{ contact_form.user_name }}
+                    </div>
+                    <div class="form-group">
+                        {% for error in contact_form.email.errors %}
+                            <p class="text-danger">{{ error }}</p>
+                        {% endfor %}
+                        <label for="{{ contact_form.email.id_for_label }}">
+                            {{ contact_form.email.label }}
+                        </label>
+                        {{ contact_form.email }}
+                    </div>
+                    <div class="form-group">
+                        {% for error in contact_form.text.errors %}
+                            <p class="text-danger">{{ error }}</p>
+                        {% endfor %}
+                        <label for="{{ contact_form.text.id_for_label }}">
+                            {{ contact_form.text.label }}
+                        </label>
+                        {{ contact_form.text }}
+                    </div>
+                    <button type="submit" class="btn btn-success btn-block">ثبت نام</button>
+                </form>
+                <!--            </div>-->
+            </div>
+            <!-- end contact-us form-->
+
+            <!--sidebar-->
+            <div class="col-md-6 col-lg-6" id="sidebar-contact-us">
+                <div class="panel panel-info">
+                    <!-- List group -->
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <address>
+                                <strong>آدرس: </strong>
+                                {{ settings.address }}
+                            </address>
+                        </li>
+                        <li class="list-group-item">
+                            <address>
+                                <strong>تلفن: </strong>
+                                <abbr title="Phone"></abbr> {{ settings.phone }}
+                            </address>
+
+                        </li>
+                        <li class="list-group-item">
+                            <address>
+                                <strong>فکس: </strong>
+                                <abbr title="Phone"></abbr> {{ settings.fax }}
+                            </address>
+                        </li>
+
+                        <li class="list-group-item">
+
+                            <address>
+                                <strong> ایمیل: </strong>
+                                <a href="mailto:#">{{ settings.email }}</a>
+                            </address>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <!--end sidebar-->
+
+        </div>
+    </div>
+    <!--end content-->
+{% endblock %}

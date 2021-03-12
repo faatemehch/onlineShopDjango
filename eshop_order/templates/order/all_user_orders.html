@@ -1,0 +1,49 @@
+{% extends 'shared/MainLayout.html' %}
+{% block content %}
+    <!--title-->
+    <div class="container content-title">
+        <h1><small>تاریخچه سفارشات</small></h1>
+    </div>
+    <!--end title-->
+    <!--body-->
+    <div class="container">
+        <div class="row">
+            <table class="table table-bordered">
+                <tr class="success">
+                    <td>شناسه سفارش</td>
+                    <td>نام و نام خانوادگی</td>
+                    <td>تاریخ ثبت سفارش</td>
+                    <td>وضعیت ارسال</td>
+                    <td>مبلغ کل</td>
+                    <td>
+                        #
+                    </td>
+                </tr>
+
+                {% for user_order in  user_orders %}
+                    <tr>
+                        <td>{{ user_order.id }}</td>
+                        <td>{{ user_order.name }} {{ user_order.family }}</td>
+                        <td>{{ user_order.payment_date|date:'H:i:s - Y/m/d' }}</td>
+                        {% if user_order.is_send %}
+                            <td>ارسال شده</td>
+                        {% else %}
+                            <td>در دست بررسی</td>
+                        {% endif %}
+                        <td>{{ user_order.get_total_price }}</td>
+                        <td>
+                            <a href="{% url 'show_user_order_detail' user_order.id %}"
+                               class="btn btn-primary btn-block">
+                                مشاهده جزئیات سفارش
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+
+
+            </table>
+        </div>
+    </div>
+    <!--end body-->
+
+{% endblock %}

@@ -1,0 +1,123 @@
+{% extends 'shared/MainLayout.html' %}
+{% block content %}
+
+    <!--title-->
+    <div class="container content-title">
+        <h1><small>مشاهده جزئیات سبد خرید</small></h1>
+    </div>
+    <!--end title-->
+    <!--body-->
+    <div class="container">
+        <div class="row">
+            <table class="table table-bordered">
+                <tr class="success">
+                    <td>شناسه سفارش</td>
+                    <td>نام و نام خانوادگی</td>
+                    <td>تاریخ ثبت سفارش</td>
+                    <td>وضعیت پرداخت</td>
+                    <td>وضعیت ارسال</td>
+                <tr>
+                    <td>{{ user_order.tracking_code }}</td>
+                    <td>{{ user_order.name }} {{ user_order.family }}</td>
+                    <td>{{ user_order.payment_date|date:'H:i:s - Y/m/d' }}</td>
+                    <td>پرداخت شده</td>
+                    <td>
+                        {% if request.user.is_superuser %}
+                            <input type="checkbox" name="is_closed" value="closed" {% if  user_order.is_send %}
+                                   checked{% endif %} id="is_send"
+                                   data-change-to-sent-url='{% url "ajax_change_to_send_order" user_order.id %}'>
+                        {% else %}
+                            {% if user_order.is_send %}
+                                <td>ارسال شده</td>
+                            {% else %}
+                                <td>در دست بررسی</td>
+                            {% endif %}
+                        {% endif %}
+
+                    </td>
+                </tr>
+            </table>
+            <table class="table table-bordered">
+                <tr class="danger">
+                    <td>شناسه محصول</td>
+                    <td>محصول</td>
+                    <td>تعداد</td>
+                    <td>قیمت</td>
+                    <td>قیمت کل</td>
+                </tr>
+                {% for order_detail in user_order.orderdetail_set.all %}
+                    <tr>
+                        <td>{{ order_detail.product.id }}</td>
+                        <td>
+                            <a href="{% url 'product-detail' order_detail.product.id %}">
+                                {{ order_detail.product.title }}
+                            </a>
+                        </td>
+                        <td>{{ order_detail.count }}</td>
+                        <td>
+                            {% if order_detail.product.discounted_price %}
+                                {{ order_detail.product.discounted_price }}
+                            {% else %}
+                                {{ order_detail.product.price }}
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% widthratio order_detail.price 1 order_detail.count %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                {#                <tr>#}
+                {#                    <td>۸۸۵۷۴</td>#}
+                {#                    <td>لباس پسرانه</td>#}
+                {#                    <td>۱</td>#}
+                {#                    <td>۲۰۰۰</td>#}
+                {#                    <td>۲۰۰۰</td>#}
+                {#                </tr>#}
+
+            </table>
+            <table class="table table-bordered">
+                <tr class="warning">
+                    <td>وضعیت ارسال</td>
+                    <td>مبلغ کل</td>
+                    <td>استفاده از کد تخفیف</td>
+                    <td>کد پستی</td>
+                    <td>آدرس</td>
+                </tr>
+                <tr>
+                    {% if user_order.is_send %}
+                        <td>ارسال شده</td>
+                    {% else %}
+                        <td>در دست بررسی</td>
+                    {% endif %}
+                    <td>{{ user_order.get_total_price }} تومان</td>
+                    {% if user_order.use_code %}
+                        <td>{{ user_order.coupon_code.code }}</td>
+                    {% else %}
+                        <td>خیر</td>
+                    {% endif %}
+                    <td>{{ user_order.post_code }}</td>
+                    <td>{{ user_order.province }}-{{ user_order.city }}-{{ user_order.address }}</td>
+                </tr>
+            </table>
+
+        </div>
+    </div>
+    <!--end body-->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script>
+        $("#is_send").change(function () {
+            var endpoint = $("#is_send").attr("data-change-to-sent-url");
+            $.ajax({
+                method: 'GET',
+                url: endpoint,
+                success: function (data) {
+                    $("#is_send").html(data);
+                },
+                error: function (error_data) {
+                    console.log(error_data)
+                }
+            })
+        });
+    </script>
+{% endblock %}

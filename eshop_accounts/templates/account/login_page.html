@@ -1,0 +1,42 @@
+{% extends 'shared/MainLayout.html' %}
+{% block content %}
+    <!--LOGIN FORM-->
+    <div class="container">
+        <div class="row content-title">
+            <h1><small>ورود به سایت</small></h1>
+        </div>
+        <div class="row col-md-6 col-md-offset-3">
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    {% for err in login_form.user_name.errors %}
+                        <p style="color: red"> {{ err }}</p>
+                    {% endfor %}
+                    <label for="{{ login_form.user_name.id_for_label }}">{{ login_form.user_name.label }}</label>
+                    {{ login_form.user_name }}
+                </div>
+                <div class="form-group">
+                    {% for err in login_form.password.errors %}
+                        <p style="color: red"> {{ err }}</p>
+                    {% endfor %}
+                    <label for="{{ login_form.password.id_for_label }}">{{ login_form.password.label }}</label>
+                    {{ login_form.password }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ login_form.captcha.id_for_label }} "
+                           class="required-field">{{ login_form.captcha.label }}</label>
+                    {{ login_form.captcha }}
+                </div>
+                <div class="checkbox">
+                    <label>
+{#                        <input type="checkbox"> فراموشی رمز عبور#}
+                        <a href="{% url 'password_reset' %}"> فراموشی رمز عبور</a>
+
+                    </label>
+                </div>
+                <button type="submit" class="btn btn-success btn-block">ورود</button>
+            </form>
+        </div>
+    </div>
+    <!--END LOGIN FORM-->
+{% endblock content %}

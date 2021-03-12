@@ -1,0 +1,160 @@
+{% extends 'shared/MainLayout.html' %}
+{% block content %}
+    <!--SLIDER-->
+    <div class="container">
+        <div id="Slider" class="row">
+            <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+                <!-- Indicators -->
+                <ol class="carousel-indicators">
+                    <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
+                    <li data-target="#carousel-example-generic" data-slide-to="1"></li>
+                    <li data-target="#carousel-example-generic" data-slide-to="2"></li>
+                </ol>
+                <!-- Wrapper for slides -->
+                <div class="carousel-inner" role="listbox">
+                    {% for slider in sliders %}
+                        {% if forloop.first %}
+                            <div class="item active  ">
+                        {% else %}
+                            <div class="item  ">
+                        {% endif %}
+                    <img src="{{ slider.image.url }}"
+                         width="100%" alt="{{ slider.title }}" style="height: 450px">
+                    </div>
+                    {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--END SLIDER-->
+
+        <!--body-->
+        <div class="container">
+            <div class="row">
+                <div class="row content-title">
+                    <h1><small>جدید ترین محصولات</small></h1>
+                </div>
+                {% for new_product in newest_products %}
+                    <!--start new content-->
+                    <div class="col-sm-12 col-md-4 content">
+                        <div class="thumbnail">
+                            <img src="{{ new_product.image.url }}"
+
+                                 alt="...">
+
+                            <div class="caption">
+                                <h3>{{ new_product.title }}
+                                    {% if new_product.quantity == 0 %}
+                                        <span class="label label-danger">ناموجود</span>
+                                    {% endif %}
+                                </h3>
+
+                                <h4>
+                                    <label>
+                                        قیمت محصول:
+                                    </label>
+                                    <br>
+                                    {% if new_product.discounted_price %}
+                                        <del>{{ new_product.price }} تومان</del>
+                                        {{ new_product.discounted_price }} تومان
+                                    {% else %}
+                                        {{ new_product.price }} تومان
+                                    {% endif %}
+                                </h4>
+                                <p>
+                                    <a href="{{ new_product.get_absolute_url }}" class="btn btn-primary btn-block"
+                                       role="button">مشاهده محصول</a>
+                                    <a href="{% url 'add_single_new_item' new_product.id %}"
+                                       class="btn btn-warning btn-block {% if new_product.quantity == 0 %}disabled{% endif %}"
+                                       role="button">افزودن به سبد خرید</a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                <!--end new content -->
+                <div class="row content-title">
+                    <h1><small>پر فروش‌ترین محصولات</small></h1>
+                </div>
+                {% for most_sell_product in  most_sell_products %}
+                    <!--start most sell products-->
+                    <div class="col-sm-12 col-md-4 content">
+                        <div class="thumbnail">
+                            <img src="{{ most_sell_product.image.url }}"
+                                 alt="{{ most_sell_product.title }}">
+                            <div class="caption">
+                                <h3>{{ most_sell_product.title }}</h3>
+                                <h4>
+                                    <label>
+                                        قیمت محصول:
+                                    </label>
+                                    <br>
+                                    {% if most_sell_product.discounted_price %}
+                                        <del>{{ most_sell_product.price }} تومان</del>
+                                        {{ most_sell_product.discounted_price }} تومان
+                                    {% else %}
+                                        {{ most_sell_product.price }} تومان
+                                    {% endif %}
+                                </h4>
+                                <p>
+                                    <a href="{% url 'product-detail' most_sell_product.id %}"
+                                       class="btn btn-primary btn-block" role="button">مشاهده محصول</a>
+                                    <a href="{% url 'add_single_new_item' most_sell_product.id %}"
+                                       class="btn btn-warning btn-block {% if most_sell_product.quantity == 0 %}disabled{% endif %}"
+                                       role="button">افزودن به سبد خرید</a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <!--end most sell products-->
+                {% endfor %}
+
+                <div class="row content-title">
+                    <h1><small>پر بازدیدترین محصولات</small></h1>
+                </div>
+                {% for most_visited_product in most_visited_products %}
+                    <!--start new content-->
+                    <div class="col-sm-12 col-md-4 content">
+                        <div class="thumbnail">
+                            <img src="{{ most_visited_product.image.url }}"
+
+                                 alt="...">
+
+                            <div class="caption">
+                                <h3>{{ most_visited_product.title }}
+                                    {% if most_visited_product.quantity == 0 %}
+                                        <span class="label label-danger">ناموجود</span>
+                                    {% endif %}
+                                </h3>
+                                <h4>
+                                    <label>
+                                        قیمت محصول:
+                                    </label>
+                                    <br>
+                                    {% if most_visited_product.discounted_price %}
+                                        <del>{{ most_visited_product.price }} تومان</del>
+                                        {{ most_visited_product.discounted_price }} تومان
+                                    {% else %}
+                                        {{ most_visited_product.price }} تومان
+                                    {% endif %}
+                                </h4>
+                                <p>
+                                    <a href="{{ most_visited_product.get_absolute_url }}"
+                                       class="btn btn-primary btn-block"
+                                       role="button">مشاهده محصول</a>
+                                    <a href="{% url 'add_single_new_item' most_visited_product.id %}"
+                                       class="btn btn-warning btn-block {% if most_visited_product.quantity == 0 %}disabled{% endif %} "
+                                       role="button">افزودن به سبد خرید</a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+
+
+            </div>
+        </div>
+
+        <!--end body-->
+    </div>
+{% endblock content %}

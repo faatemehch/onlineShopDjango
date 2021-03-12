@@ -1,0 +1,24 @@
+<!--start item -->
+<div class="col-lg-3 col-md-3 col-sm-4 content">
+    <div class="thumbnail">
+        <img src={% if product.image %} {{ product.image.url }} {% endif %}alt="{{ product.title }}">
+        <div class="caption">
+            <h5>{{ product.title }}
+                {% if not product.active or product.quantity == 0 %}
+                    <span class="label label-danger">ناموجود</span>
+                {% endif %}
+            </h5>
+            <h6>قیمت: {{ product.price }} تومان</h6>
+            <p>
+                <a href="{{ product.get_absolute_url }}" class="btn btn-primary btn-block"
+                   role="button">مشاهده محصول</a>
+                <a href="{% url 'add_single_new_item' product.id %}"
+                   class="btn btn-warning btn-block {% if not product.active or product.quantity == 0 %}disabled{% endif %}"
+                   role="button">افزودن
+                    به سبد
+                    خرید</a>
+            </p>
+        </div>
+    </div>
+</div>
+<!--end item -->

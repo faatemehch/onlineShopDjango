@@ -1,0 +1,23 @@
+{% load render_partial %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% include 'shared/_Header.html' %}
+</head>
+<body>
+<!--HEADER-->
+{#{% render_partial 'header' %}#}
+{% render_partial 'eshop_settings.views.header' %}
+<!--END HEADER-->
+
+{% block content %}
+
+{% endblock content %}
+
+<!--footer-->
+{% render_partial 'eshop_settings.views.footer' %}
+<!--end footer-->
+{% include  'shared/_Footer.html' %}
+</body>
+</html>
