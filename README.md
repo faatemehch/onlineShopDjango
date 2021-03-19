@@ -1,6 +1,6 @@
 # onlineShopDjango
 online shopping with django framework
 
-# python /
-# django /
+# python 
+# django 
 # bootstrap
