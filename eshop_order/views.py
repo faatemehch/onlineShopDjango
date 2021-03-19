@@ -2,7 +2,7 @@ import string
 import random
 import jdatetime
 from zeep import Client
-from django.http import Http404, JsonResponse
+from django.http import Http404
 from django.contrib import messages
 from django.http import HttpResponse
 from eshop_products.models import Product
@@ -82,25 +82,6 @@ def open_user_order(request):
 
 
 # remove an item from order
-# @login_required( login_url='/login' )
-# def remove_order_details(request, *args, **kwargs):
-#     detail_id = kwargs['detail_id']
-#     if detail_id is not None:
-#         order_detail = OrderDetail.objects.get_queryset().get( id=detail_id, order__owner_id=request.user.id )
-#         order_detail.product.quantity += order_detail.count
-#         order_detail.product.save()
-#         order_detail.delete()
-#         # if order is empty refresh order to default
-#         order: Order = Order.objects.filter( owner_id=request.user.id, is_paid=False ).first()
-#         if len( order.orderdetail_set.all() ) == 0:
-#             print( 'deleted' )
-#             order.use_code = False
-#             order.coupon_code = None
-#             order.save()
-#         messages.success( request, 'محصول مورد نظر از سبد خرید حذف شد!' )
-#         return redirect( 'open_user_order' )
-#     raise Http404
-
 @login_required( login_url='/login' )
 def remove_order_details(request, *args, **kwargs):
     detail_id = kwargs['detail_id']
@@ -120,8 +101,10 @@ def remove_order_details(request, *args, **kwargs):
             'order': order,
             'details': OrderDetail.objects.filter( order=order ).all(),
             'total': order.get_total_price(),
+            'msg': 'محصول مورد نظر از سبد خرید شما حذف شد!',
+            'coupon_form': CouponForm()
         }
-        return render( request, 'order/remove_all_item_order_ajax.html', context )
+        return render( request, 'order/change_quantity_orderdetails_ajax.html', context )
     raise Http404
 
 
@@ -140,34 +123,44 @@ def remove_single_item(request, *args, **kwargs):
         context['order'] = order
         context['details'] = order.orderdetail_set.all()
         context['total'] = order.get_total_price()
-        if order_detail.count == 0:
-            order_detail.delete()
-            # if order is empty refresh order to default
-            if len( order.orderdetail_set.all() ) == 0:
-                order.use_code = False
-                order.coupon_code = None
-                order.save()
-            # messages.success( request, 'محصول مورد نظر از سبد خرید حذف شد!' )
-        # return redirect( 'open_user_order' )
-        return render( request, 'order/remove_all_item_order_ajax.html', context )
-    raise Http404
+        context['coupon_form'] = CouponForm()
+    if order_detail.count == 0:
+        order_detail.delete()
+        # if order is empty refresh order to default
+        if len( order.orderdetail_set.all() ) == 0:
+            order.use_code = False
+            order.coupon_code = None
+            order.save()
+        # messages.success( request, 'محصول مورد نظر از سبد خرید حذف شد!' )
+    # return redirect( 'open_user_order' )
+    return render( request, 'order/change_quantity_orderdetails_ajax.html', context )
 
 
 # add count of an item in open order
 @login_required( login_url='/login' )
 def add_single_item(request, *args, **kwargs):
     detail_id = kwargs['detail_id']
+    context = {}
     if detail_id is not None:
+        order: Order = Order.objects.filter( owner_id=request.user.id, is_paid=False ).first()
         order_detail = OrderDetail.objects.get_queryset().get( id=detail_id, order__owner_id=request.user.id )
         if order_detail.product.quantity > 0:
             order_detail.count += 1
             order_detail.product.quantity -= 1
             order_detail.product.save()
-            messages.success( request, 'محص.ل با موفقیت به سبد خرید اضافه شد!' )
+            context['order'] = order
+            context['details'] = order.orderdetail_set.all()
+            context['total'] = order.get_total_price()
+            context['coupon_form'] = CouponForm()
         else:
-            messages.success( request, 'تعداد سفارش محصول بیش از حد مجاز است!' )
+            context['order'] = order
+            context['details'] = order.orderdetail_set.all()
+            context['total'] = order.get_total_price()
+            context['coupon_form'] = CouponForm()
+            context['msg'] = 'تعداد سفارش محصول بیش از حد مجاز است!'
         order_detail.save()
-        return redirect( 'open_user_order' )
+        # return redirect( 'open_user_order' )
+        return render( request, 'order/change_quantity_orderdetails_ajax.html', context )
 
 
 # load cities based on province with ajax
@@ -182,7 +175,8 @@ def load_cities(request):
 @login_required( login_url='/login' )
 def complete_order(request):
     complete_form = CompleteOrderForm( request.POST or None )
-    if complete_form.is_valid():
+    print( complete_form.fields )
+    if complete_form.is_valid() and complete_form.cleaned_data.items() is not None:
         # cleaned data
         f_name = complete_form.cleaned_data.get( 'name' )
         family = complete_form.cleaned_data.get( 'family' )

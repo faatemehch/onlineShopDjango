@@ -63,5 +63,14 @@
                 }
             })
         });
+        // count table rows
+        var num = 1
+        $(document).ready(function () {
+            $.each($('.row-count'), function () {
+                $(this).html($(this).index() + num);
+                num++;
+            });
+        });
+
     </script>
 {% endblock %}

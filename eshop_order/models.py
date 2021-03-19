@@ -17,13 +17,13 @@ class Order( models.Model ):
                                     blank=True )
     is_send = models.BooleanField( default=False, verbose_name='ارسال شده/نشده', null=True, blank=True )
     # complete order
-    name = models.CharField( verbose_name='نام', max_length=50, null=True, blank=True )
-    family = models.CharField( verbose_name=' نام‌خانوادگی', max_length=50, null=True, blank=True )
-    post_code = models.IntegerField( verbose_name='کد پستی', null=True, blank=True )
-    phone_number = models.IntegerField( verbose_name='شماره همراه', null=True, blank=True )
-    province = models.ForeignKey( 'Province', verbose_name='استان', on_delete=models.CASCADE, null=True, blank=True )
-    city = models.ForeignKey( 'City', verbose_name='شهر', on_delete=models.CASCADE, null=True, blank=True )
-    address = models.TextField( verbose_name='آدرس', null=True, blank=True )
+    name = models.CharField( verbose_name='نام', max_length=50, null=True )
+    family = models.CharField( verbose_name=' نام‌خانوادگی', max_length=50, null=True )
+    post_code = models.IntegerField( verbose_name='کد پستی', null=True )
+    phone_number = models.IntegerField( verbose_name='شماره همراه', null=True )
+    province = models.ForeignKey( 'Province', verbose_name='استان', on_delete=models.CASCADE, null=True )
+    city = models.ForeignKey( 'City', verbose_name='شهر', on_delete=models.CASCADE, null=True )
+    address = models.TextField( verbose_name='آدرس' 'توضیحات', null=True )
     description = models.TextField( verbose_name='توضیحات', null=True, blank=True )
 
     class Meta:

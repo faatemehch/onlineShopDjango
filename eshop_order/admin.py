@@ -12,6 +12,10 @@ class OrderAdmin( admin.ModelAdmin ):
     list_display = ['__str__', 'is_paid', 'is_send', 'payment_date']
 
 
+class OrderDetilsAdmin( admin.ModelAdmin ):
+    list_display = ['__str__', 'order']
+
+
 class CityAdmin( admin.ModelAdmin ):
     list_display = ['__str__', 'province']
 
@@ -19,7 +23,7 @@ class CityAdmin( admin.ModelAdmin ):
 # Register your models here.
 
 admin.site.register( Order, OrderAdmin )
-admin.site.register( OrderDetail )
+admin.site.register( OrderDetail, OrderDetilsAdmin )
 admin.site.register( Coupon )
 admin.site.register( Province )
 admin.site.register( City, CityAdmin )

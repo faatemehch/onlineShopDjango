@@ -45,7 +45,9 @@
                                     <label>
                                         تعداد:
                                     </label>
-                                    <a href="{% url 'add_single_item' detail.id %}">
+                                    <a {% if detail.product.quantity == 0 %}
+                                        disabled {% else %}href="{% url 'add_single_item' detail.id %}" class="delete"
+                                    {% endif %}>
                                         <button type="button" {% if detail.product.quantity == 0 %}
                                                 disabled{% endif %}>
                                             <i class="fa fa-plus" style="font-size:15px"></i>
@@ -54,9 +56,9 @@
                                     <span style="background-color: white">{{ detail.count }}</span>
                                     <a href="{% url 'ajax_remove_single_item' detail.id %}" class="delete"
                                        id="remove_single_item">
-                                    <button type="button" {% if detail.count == 0 %}disabled{% endif %}>
-                                        <i class="fa fa-minus" style="font-size:15px"></i>
-                                    </button>
+                                        <button type="button" {% if detail.count == 0 %}disabled{% endif %}>
+                                            <i class="fa fa-minus" style="font-size:15px"></i>
+                                        </button>
                                     </a>
                                 </h4>
                             </div>
@@ -120,7 +122,6 @@
                 </div>
             {% endif %}
     </div>
-    </div>
     <!--end body-->
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script>
@@ -137,7 +138,9 @@
                 url: href,
                 success: function (data) {
                     $("#new_data").html(data);
-                    $(alert('محصول با موفقیت از سبد خرید شما حذف گردید!'));
+                    {% if msg %}
+                        alert({{ msg }});
+                    {% endif %}
                 },
                 error: function (error_data) {
                     console.log(error_data)
