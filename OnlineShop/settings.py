@@ -13,7 +13,7 @@ import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path( __file__ ).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
@@ -127,9 +127,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [os.path.join( BASE_DIR, 'assets' )]
-STATIC_ROOT = os.path.join( BASE_DIR, 'static_cdn', 'static_root' )
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'assets')]
+STATIC_ROOT = os.path.join(BASE_DIR, 'static_cdn', 'static_root')
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join( BASE_DIR, 'static_cdn', 'media_root' )
+MEDIA_ROOT = os.path.join(BASE_DIR, 'static_cdn', 'media_root')
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
