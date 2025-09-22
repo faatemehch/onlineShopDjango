@@ -25,3 +25,4 @@ A Django-based web application
 4. **Install dependencies**
    ```bash
    pip install -r requirements.txt
+![onlineshop](https://github.com/user-attachments/assets/07c5a9b1-e9e6-4ce9-b7a4-9cad6998064b)
